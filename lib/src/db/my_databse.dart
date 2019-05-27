@@ -33,8 +33,18 @@ class MyDatabase extends _$MyDatabase{
   }*/
 
   // Para ser Reactive
-   Stream<List<Todo>> getAllTodos(){
+  Stream<List<Todo>> getAllTodos(){
     return select(todos).watch();
+  }
+
+  // Para Add
+  Future addTodo(Todo todo){
+    return into(todos).insert(todo);
+  }
+
+  // Para Deletar
+  Future deleteTodo(id){
+    return (delete(todos)..where((todo) => todo.id.equals(id))).go();
   }
 
   @override 

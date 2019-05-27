@@ -1,49 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:kauflist/src/addTodo/addTodo.dart';
+import 'package:kauflist/src/db/my_databse.dart';
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
+ 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {    
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     
     return Scaffold(
       appBar: AppBar(       
-        title: Text(widget.title),
+      title: Text("KaufList"),
+      actions: <Widget>[
+        // para adicionar um novo item
+        IconButton(icon: Icon(Icons.add), onPressed: () {
+          // chama a pagina 'addTodo'
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AddTodo()));
+        },)
+      ],
       ),
-      body: Center(      
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
+      // para listar na tela os itens
+      body: StreamBuilder<List<Todo>>(
+        // trazendo os dados da my_databse
+        stream: MyDatabase.instance.getAllTodos(),
+        initialData: [], // importante, iniciando a lista sem erro
+        builder: (context, snapshot) {
+          // inserindo os itens numa lista
+          List<Todo> list = snapshot.data; // 33:32
+
+          return ListView.builder(
+            itemCount: list.length, // conta os itens da list
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: IconButton(icon: Icon(Icons.delete), onPressed: () {
+                  MyDatabase.instance.deleteTodo(list[index].id);
+                },),
+                title: Text(list[index].description),
+                );
+            },);
+        },),
     );
   }
 }
