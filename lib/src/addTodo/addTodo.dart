@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kauflist/src/home/MyHomePage.dart';
 import 'package:kauflist/src/db/my_databse.dart';
 
 class AddTodo extends StatefulWidget {
